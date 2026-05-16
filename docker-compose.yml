@@ -1,0 +1,10 @@
+services:
+  db:
+    image: postgres:17 # Using the latest stable 2026 version
+    container_name: devtrack-db
+    environment:
+      POSTGRES_USER: devtrack_user
+      POSTGRES_PASSWORD: yourpassword
+      POSTGRES_DB: devtrack_db
+    ports:
+      - "5432:5432"
