@@ -2,6 +2,9 @@ package com.Mohammad.devtrack.service;
 
 import com.Mohammad.devtrack.model.ResourceModel;
 import com.Mohammad.devtrack.repository.ResourceRepository;
+import com.Mohammad.devtrack.exceptions.ResourceExceptions;
+import com.Mohammad.devtrack.exceptions.ValidationExceptions;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.BeanUtils;
@@ -28,7 +31,7 @@ public class ResourceService {
     public void delete(Long RID) {
 
         if (!resourceRepository.existsById(RID)) {
-            throw new RuntimeException("Resource not found with id: "+ RID);
+            throw new ResourceExceptions.ResourceNotFoundException("Resource not found with id: "+ RID);
         }
         resourceRepository.deleteById(RID);
     }
@@ -37,7 +40,7 @@ public class ResourceService {
     public ResourceModel create(ResourceModel rm) {
 
         if (rm.getSalary() < 0) {
-            throw new RuntimeException("Cannot Have Negative Salary");
+            throw new ValidationExceptions.ValidationException("Cannot Have Negative Salary");
         }
 
         return resourceRepository.save(rm);
@@ -46,10 +49,10 @@ public class ResourceService {
     @Transactional
     public ResourceModel update(ResourceModel rm) {
         ResourceModel resource = resourceRepository.findById(rm.getRID())
-            .orElseThrow(() -> new RuntimeException("Resource not found with id: " + rm.getRID()));
+            .orElseThrow(() -> new ResourceExceptions.ResourceNotFoundException("Resource not found with id: " + rm.getRID()));
         
         if (rm.getSalary() < 0) {
-            throw new RuntimeException("Cannot Have Negative Salary");
+            throw new ValidationExceptions.ValidationException("Cannot Have Negative Salary");
 
         }
         

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevTrack — track job applications, salaries, and notes in one place.">
+    <title>DevTrack — Job Application Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <!-- Auth (shown before login — toggle visibility with JS later) -->
+    <div class="auth-layout" id="auth-view" aria-label="Sign in or register">
+        <aside class="auth-brand">
+            <div class="brand-mark" aria-hidden="true">
+                <span class="brand-icon">&lt;/&gt;</span>
+            </div>
+            <h1 class="brand-title">DevTrack</h1>
+            <p class="brand-tagline">Track every application. Own your job search.</p>
+            <ul class="brand-features">
+                <li>Log companies, salaries, and links</li>
+                <li>Filter and sort your pipeline</li>
+                <li>Keep notes per application</li>
+            </ul>
+        </aside>
+
+        <main class="auth-main">
+            <div class="auth-card">
+                <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+                    <button type="button" class="auth-tab is-active" role="tab" aria-selected="true" aria-controls="panel-signin" id="tab-signin">Sign in</button>
+                    <button type="button" class="auth-tab" role="tab" aria-selected="false" aria-controls="panel-register" id="tab-register">Register</button>
+                </div>
+
+                <section class="auth-panel is-active" id="panel-signin" role="tabpanel" aria-labelledby="tab-signin">
+                    <h2>Welcome back</h2>
+                    <p class="auth-subtitle">Sign in to view your applications.</p>
+                    <form class="form" id="form-signin" action="#" method="post">
+                        <div class="field">
+                            <label for="signin-email">Email</label>
+                            <input type="email" id="signin-email" name="uEmail" autocomplete="email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="field">
+                            <label for="signin-password">Password</label>
+                            <input type="password" id="signin-password" name="uHashedPassword" autocomplete="current-password" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+                    </form>
+                </section>
+
+                <section class="auth-panel" id="panel-register" role="tabpanel" aria-labelledby="tab-register" hidden>
+                    <h2>Create an account</h2>
+                    <p class="auth-subtitle">Start tracking your job search today.</p>
+                    <form class="form" id="form-register" action="#" method="post">
+                        <div class="field">
+                            <label for="register-name">Display name</label>
+                            <input type="text" id="register-name" name="uName" autocomplete="name" placeholder="Alex Developer" required>
+                        </div>
+                        <div class="field">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" name="uEmail" autocomplete="email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="field">
+                            <label for="register-password">Password</label>
+                            <input type="password" id="register-password" name="uHashedPassword" autocomplete="new-password" placeholder="At least 8 characters" required minlength="8">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Main app (shown after login — toggle with JS later) -->
+    <div class="app-shell is-hidden" id="app-view">
+        <header class="app-header">
+            <div class="header-left">
+                <span class="header-logo" aria-hidden="true">&lt;/&gt;</span>
+                <span class="header-title">DevTrack</span>
+            </div>
+            <div class="header-center">
+                <label class="search-wrap" for="search-applications">
+                    <span class="visually-hidden">Search applications</span>
+                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="search" id="search-applications" class="search-input" placeholder="Search company or notes…">
+                </label>
+            </div>
+            <div class="header-right">
+                <div class="user-menu">
+                    <span class="user-avatar" aria-hidden="true">AD</span>
+                    <div class="user-meta">
+                        <span class="user-name" id="display-user-name">Alex Developer</span>
+                        <span class="user-email" id="display-user-email">you@example.com</span>
+                    </div>
+                    <button type="button" class="btn btn-ghost btn-sm" id="btn-signout">Sign out</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-body">
+            <nav class="app-sidebar" aria-label="Main navigation">
+                <ul class="nav-list">
+                    <li>
+                        <a href="#dashboard" class="nav-link is-active" data-view="dashboard">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#applications" class="nav-link" data-view="applications">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+                            Applications
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#account" class="nav-link" data-view="account">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            Account
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <main class="app-main" id="main-content">
+                <!-- Dashboard -->
+                <section class="view view-dashboard is-active" id="view-dashboard" aria-labelledby="dashboard-heading">
+                    <div class="page-header">
+                        <div>
+                            <h2 id="dashboard-heading">Dashboard</h2>
+                            <p class="page-desc">Overview of your job search pipeline.</p>
+                        </div>
+                        <button type="button" class="btn btn-primary" data-open-dialog="dialog-add-application">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                            Add application
+                        </button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <article class="stat-card">
+                            <span class="stat-label">Total applications</span>
+                            <span class="stat-value" id="stat-total">12</span>
+                        </article>
+                        <article class="stat-card stat-card-accent">
+                            <span class="stat-label">Applied this month</span>
+                            <span class="stat-value" id="stat-month">4</span>
+                        </article>
+                        <article class="stat-card">
+                            <span class="stat-label">Avg. listed salary</span>
+                            <span class="stat-value" id="stat-avg-salary">$118k</span>
+                        </article>
+                        <article class="stat-card">
+                            <span class="stat-label">With posting link</span>
+                            <span class="stat-value" id="stat-with-link">9</span>
+                        </article>
+                    </div>
+
+                    <section class="panel">
+                        <div class="panel-header">
+                            <h3>Recent applications</h3>
+                            <a href="#applications" class="link-muted">View all</a>
+                        </div>
+                        <div class="application-list application-list-compact" id="dashboard-recent-list">
+                            <!-- Populated by JS; sample static cards for layout -->
+                            <article class="app-card">
+                                <div class="app-card-main">
+                                    <h4 class="app-card-company">Acme Corp</h4>
+                                    <p class="app-card-meta">Applied May 18, 2026 · <span class="salary">$125,000</span></p>
+                                </div>
+                                <a href="#" class="app-card-link">View posting</a>
+                            </article>
+                            <article class="app-card">
+                                <div class="app-card-main">
+                                    <h4 class="app-card-company">Northwind Labs</h4>
+                                    <p class="app-card-meta">Applied May 12, 2026 · <span class="salary">$110,000</span></p>
+                                </div>
+                                <span class="app-card-muted">No link</span>
+                            </article>
+                            <article class="app-card">
+                                <div class="app-card-main">
+                                    <h4 class="app-card-company">Globex Systems</h4>
+                                    <p class="app-card-meta">Applied May 5, 2026 · <span class="salary">$135,000</span></p>
+                                </div>
+                                <a href="#" class="app-card-link">View posting</a>
+                            </article>
+                        </div>
+                    </section>
+                </section>
+
+                <!-- Applications -->
+                <section class="view view-applications" id="view-applications" aria-labelledby="applications-heading" hidden>
+                    <div class="page-header">
+                        <div>
+                            <h2 id="applications-heading">Applications</h2>
+                            <p class="page-desc">All jobs you have applied to.</p>
+                        </div>
+                        <div class="page-actions">
+                            <select class="select" id="filter-sort" aria-label="Sort applications">
+                                <option value="date-desc">Newest first</option>
+                                <option value="date-asc">Oldest first</option>
+                                <option value="salary-desc">Salary (high)</option>
+                                <option value="salary-asc">Salary (low)</option>
+                                <option value="company">Company A–Z</option>
+                            </select>
+                            <button type="button" class="btn btn-primary" data-open-dialog="dialog-add-application">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                                Add application
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-wrap">
+                        <table class="data-table" id="applications-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Company</th>
+                                    <th scope="col">Salary</th>
+                                    <th scope="col">Applied</th>
+                                    <th scope="col">Posting</th>
+                                    <th scope="col">Notes</th>
+                                    <th scope="col"><span class="visually-hidden">Actions</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="applications-tbody">
+                                <tr data-rid="1">
+                                    <td><strong>Acme Corp</strong></td>
+                                    <td class="cell-mono">$125,000</td>
+                                    <td>May 18, 2026</td>
+                                    <td><a href="#" class="table-link">Open</a></td>
+                                    <td class="cell-truncate" title="Follow up with recruiter next week.">Follow up with recruiter…</td>
+                                    <td class="cell-actions">
+                                        <button type="button" class="btn btn-ghost btn-icon" title="Edit" data-action="edit" data-rid="1" aria-label="Edit Acme Corp">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h5"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                        </button>
+                                        <button type="button" class="btn btn-ghost btn-icon btn-danger" title="Delete" data-action="delete" data-rid="1" aria-label="Delete Acme Corp">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr data-rid="2">
+                                    <td><strong>Northwind Labs</strong></td>
+                                    <td class="cell-mono">$110,000</td>
+                                    <td>May 12, 2026</td>
+                                    <td><span class="text-muted">—</span></td>
+                                    <td class="cell-truncate" title="Remote-first, backend focus.">Remote-first, backend…</td>
+                                    <td class="cell-actions">
+                                        <button type="button" class="btn btn-ghost btn-icon" title="Edit" data-action="edit" data-rid="2" aria-label="Edit Northwind Labs">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h5"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                        </button>
+                                        <button type="button" class="btn btn-ghost btn-icon btn-danger" title="Delete" data-action="delete" data-rid="2" aria-label="Delete Northwind Labs">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr data-rid="3">
+                                    <td><strong>Globex Systems</strong></td>
+                                    <td class="cell-mono">$135,000</td>
+                                    <td>May 5, 2026</td>
+                                    <td><a href="#" class="table-link">Open</a></td>
+                                    <td class="cell-truncate">—</td>
+                                    <td class="cell-actions">
+                                        <button type="button" class="btn btn-ghost btn-icon" title="Edit" data-action="edit" data-rid="3" aria-label="Edit Globex Systems">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h5"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                        </button>
+                                        <button type="button" class="btn btn-ghost btn-icon btn-danger" title="Delete" data-action="delete" data-rid="3" aria-label="Delete Globex Systems">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="empty-state is-hidden" id="applications-empty">
+                        <div class="empty-icon" aria-hidden="true">📋</div>
+                        <h3>No applications yet</h3>
+                        <p>Add your first job application to start tracking.</p>
+                        <button type="button" class="btn btn-primary" data-open-dialog="dialog-add-application">Add application</button>
+                    </div>
+                </section>
+
+                <!-- Account -->
+                <section class="view view-account" id="view-account" aria-labelledby="account-heading" hidden>
+                    <div class="page-header">
+                        <div>
+                            <h2 id="account-heading">Account</h2>
+                            <p class="page-desc">Manage your profile and credentials.</p>
+                        </div>
+                    </div>
+
+                    <div class="account-grid">
+                        <article class="panel panel-form">
+                            <h3>Profile</h3>
+                            <form class="form" id="form-update-user" action="#" method="post">
+                                <input type="hidden" name="uid" id="account-uid" value="">
+                                <div class="field">
+                                    <label for="account-name">Display name</label>
+                                    <input type="text" id="account-name" name="uName" value="Alex Developer" required>
+                                </div>
+                                <div class="field">
+                                    <label for="account-email">Email</label>
+                                    <input type="email" id="account-email" name="uEmail" value="you@example.com" required>
+                                </div>
+                                <div class="field">
+                                    <label for="account-password">New password</label>
+                                    <input type="password" id="account-password" name="uHashedPassword" autocomplete="new-password" placeholder="Leave blank to keep current">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                        </article>
+
+                        <article class="panel panel-danger-zone">
+                            <h3>Danger zone</h3>
+                            <p>Permanently delete your account and all associated applications.</p>
+                            <button type="button" class="btn btn-outline-danger" id="btn-delete-account">Delete account</button>
+                        </article>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add application dialog -->
+    <dialog class="modal" id="dialog-add-application" aria-labelledby="dialog-add-title">
+        <form class="form modal-form" id="form-add-application" method="dialog">
+            <header class="modal-header">
+                <h2 id="dialog-add-title">Add application</h2>
+                <button type="button" class="btn btn-ghost btn-icon modal-close" data-close-dialog aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </header>
+            <div class="modal-body">
+                <div class="field">
+                    <label for="add-company">Company name <span class="required">*</span></label>
+                    <input type="text" id="add-company" name="companyName" required placeholder="e.g. Acme Corp">
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="add-salary">Salary (USD) <span class="required">*</span></label>
+                        <input type="number" id="add-salary" name="salary" min="0" step="1000" required placeholder="120000">
+                    </div>
+                    <div class="field">
+                        <label for="add-applied">Date applied</label>
+                        <input type="datetime-local" id="add-applied" name="dateAppliedTo">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="add-uri">Job posting URL</label>
+                    <input type="url" id="add-uri" name="jobPostingURI" placeholder="https://…">
+                </div>
+                <div class="field">
+                    <label for="add-notes">Notes</label>
+                    <textarea id="add-notes" name="notes" rows="4" placeholder="Interview stages, contacts, follow-ups…"></textarea>
+                </div>
+            </div>
+            <footer class="modal-footer">
+                <button type="button" class="btn btn-ghost" data-close-dialog>Cancel</button>
+                <button type="submit" class="btn btn-primary">Save application</button>
+            </footer>
+        </form>
+    </dialog>
+
+    <!-- Edit application dialog -->
+    <dialog class="modal" id="dialog-edit-application" aria-labelledby="dialog-edit-title">
+        <form class="form modal-form" id="form-edit-application" method="dialog">
+            <header class="modal-header">
+                <h2 id="dialog-edit-title">Edit application</h2>
+                <button type="button" class="btn btn-ghost btn-icon modal-close" data-close-dialog aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </header>
+            <div class="modal-body">
+                <input type="hidden" name="rid" id="edit-rid">
+                <div class="field">
+                    <label for="edit-company">Company name <span class="required">*</span></label>
+                    <input type="text" id="edit-company" name="companyName" required>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="edit-salary">Salary (USD) <span class="required">*</span></label>
+                        <input type="number" id="edit-salary" name="salary" min="0" step="1000" required>
+                    </div>
+                    <div class="field">
+                        <label for="edit-applied">Date applied</label>
+                        <input type="datetime-local" id="edit-applied" name="dateAppliedTo">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="edit-uri">Job posting URL</label>
+                    <input type="url" id="edit-uri" name="jobPostingURI">
+                </div>
+                <div class="field">
+                    <label for="edit-notes">Notes</label>
+                    <textarea id="edit-notes" name="notes" rows="4"></textarea>
+                </div>
+            </div>
+            <footer class="modal-footer">
+                <button type="button" class="btn btn-ghost" data-close-dialog>Cancel</button>
+                <button type="submit" class="btn btn-primary">Update application</button>
+            </footer>
+        </form>
+    </dialog>
+
+    <!-- Delete confirmation dialog -->
+    <dialog class="modal modal-sm" id="dialog-confirm-delete" aria-labelledby="dialog-delete-title">
+        <form class="form modal-form" id="form-confirm-delete" method="dialog">
+            <header class="modal-header">
+                <h2 id="dialog-delete-title">Delete application?</h2>
+                <button type="button" class="btn btn-ghost btn-icon modal-close" data-close-dialog aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+            </header>
+            <div class="modal-body">
+                <p id="delete-confirm-message">This action cannot be undone.</p>
+                <input type="hidden" id="delete-rid" name="rid">
+            </div>
+            <footer class="modal-footer">
+                <button type="button" class="btn btn-ghost" data-close-dialog>Cancel</button>
+                <button type="submit" class="btn btn-outline-danger" value="confirm">Delete</button>
+            </footer>
+        </form>
+    </dialog>
+
+    <!-- Toast region for future JS feedback -->
+    <div class="toast-region" id="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="src/app.js" defer></script>
+</body>
+</html>

@@ -7,13 +7,20 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,27 +28,32 @@ import java.util.List;
 @Table(name = "Users")
 @Getter
 @Setter
-// No argument constructor for JPA
+// No argument constructor for jpa
 @NoArgsConstructor
-@AllArgsConstructor 
+@AllArgsConstructor
 public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long UID;
-    
+
     @Column(name = "UName", nullable = false)
-    private String UName;
-    
+    @NotBlank(message = "Name is required")
+    private String name;
+
     @Column(name = "UEmail", nullable = false)
-    private String UEmail;
-    
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email is not valid")
+    private String email;
+
     @Column(name = "UHashedPassword", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String UHashedPassword;
-    
+
     @Column(name = "UCreatedOn")
     private LocalDateTime UCreatedOn;
 
     @OneToMany(mappedBy = "UID", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ResourceModel> resources;
+
 }

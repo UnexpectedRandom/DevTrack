@@ -6,12 +6,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+
+
 
 import java.time.LocalDateTime;
 
@@ -34,6 +40,7 @@ public class ResourceModel {
     private UserModel UID;
 
     @Column(name = "CompanyName", nullable = false) //
+    @NotBlank(message = "Company name is required")
     private String CompanyName;
 
     @Column(name = "DateAppliedTo", nullable = true) //
@@ -51,6 +58,7 @@ public class ResourceModel {
     @Column(name = "LastUpdated", nullable = true)
     private LocalDateTime LastUpdated;
     
+    @Min(value = 0, message = "Salary must be non-negative")
     @Column(name = "Salary", nullable = false)
     private int Salary;
     
