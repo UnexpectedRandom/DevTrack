@@ -9,7 +9,6 @@ const authView = document.getElementById("auth-view");
 const appView = document.getElementById("app-view");
 const toastRegion = document.getElementById("toast-region");
 
-// --- Auth tabs ---
 document.querySelectorAll(".auth-tab").forEach((tab) => {
   tab.addEventListener("click", () => {
     const targetId = tab.id === "tab-signin" ? "panel-signin" : "panel-register";
@@ -57,7 +56,6 @@ document.getElementById("btn-signout")?.addEventListener("click", () => {
   showAuth();
 });
 
-// --- Sidebar navigation ---
 const views = document.querySelectorAll(".view");
 const navLinks = document.querySelectorAll(".nav-link[data-view]");
 
@@ -88,7 +86,6 @@ document.querySelectorAll('a[href="#applications"]').forEach((a) => {
   });
 });
 
-// --- Dialogs ---
 function openDialog(id) {
   const dialog = document.getElementById(id);
   if (dialog && typeof dialog.showModal === "function") {
@@ -135,7 +132,6 @@ document.getElementById("form-confirm-delete")?.addEventListener("submit", (e) =
   toast("Application deleted (UI preview — wire to DELETE /api/deleteResource/{RID}).");
 });
 
-// Edit / delete from table
 document.getElementById("applications-tbody")?.addEventListener("click", (e) => {
   const btn = e.target.closest("[data-action]");
   if (!btn) return;
