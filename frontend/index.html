@@ -13,7 +13,6 @@
 <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
 
-    <!-- Auth (shown before login — toggle visibility with JS later) -->
     <div class="auth-layout" id="auth-view" aria-label="Sign in or register">
         <aside class="auth-brand">
             <div class="brand-mark" aria-hidden="true">
@@ -74,7 +73,6 @@
         </main>
     </div>
 
-    <!-- Main app (shown after login — toggle with JS later) -->
     <div class="app-shell is-hidden" id="app-view">
         <header class="app-header">
             <div class="header-left">
@@ -125,7 +123,6 @@
             </nav>
 
             <main class="app-main" id="main-content">
-                <!-- Dashboard -->
                 <section class="view view-dashboard is-active" id="view-dashboard" aria-labelledby="dashboard-heading">
                     <div class="page-header">
                         <div>
@@ -163,7 +160,6 @@
                             <a href="#applications" class="link-muted">View all</a>
                         </div>
                         <div class="application-list application-list-compact" id="dashboard-recent-list">
-                            <!-- Populated by JS; sample static cards for layout -->
                             <article class="app-card">
                                 <div class="app-card-main">
                                     <h4 class="app-card-company">Acme Corp</h4>
@@ -189,7 +185,6 @@
                     </section>
                 </section>
 
-                <!-- Applications -->
                 <section class="view view-applications" id="view-applications" aria-labelledby="applications-heading" hidden>
                     <div class="page-header">
                         <div>
@@ -281,7 +276,6 @@
                     </div>
                 </section>
 
-                <!-- Account -->
                 <section class="view view-account" id="view-account" aria-labelledby="account-heading" hidden>
                     <div class="page-header">
                         <div>
@@ -322,7 +316,6 @@
         </div>
     </div>
 
-    <!-- Add application dialog -->
     <dialog class="modal" id="dialog-add-application" aria-labelledby="dialog-add-title">
         <form class="form modal-form" id="form-add-application" method="dialog">
             <header class="modal-header">
@@ -362,7 +355,6 @@
         </form>
     </dialog>
 
-    <!-- Edit application dialog -->
     <dialog class="modal" id="dialog-edit-application" aria-labelledby="dialog-edit-title">
         <form class="form modal-form" id="form-edit-application" method="dialog">
             <header class="modal-header">
@@ -423,7 +415,6 @@
         </form>
     </dialog>
 
-    <!-- Toast region for future JS feedback -->
     <div class="toast-region" id="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <script src="src/app.js" defer></script>
