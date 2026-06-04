@@ -5,14 +5,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.Mohammad.devtrack.service.UserService;
 import com.Mohammad.devtrack.model.UserModel;
-import com.Mohammad.devtrack.security.JwtService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @RequiredArgsConstructor
 @RestController
@@ -28,9 +26,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> postMethodName(@Valid @RequestBody UserModel param) {
-       UserModel authenticatedUser = userService.login(param);
-       return ResponseEntity.ok(authenticatedUser);
+        UserModel loggedInUser = userService.login(param);
+        return ResponseEntity.ok(loggedInUser);
     }
-    
-    
+
 }
