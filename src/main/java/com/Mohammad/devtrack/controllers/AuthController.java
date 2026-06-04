@@ -1,5 +1,6 @@
 package com.Mohammad.devtrack.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +26,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> postMethodName(@Valid @RequestBody UserModel param) {
+    public ResponseEntity<?> loginUsr(@Valid @RequestBody UserModel param, HttpSession session) {
         UserModel loggedInUser = userService.login(param);
-        return ResponseEntity.ok(loggedInUser);
+        session.setAttribute("cookie-id", loggedInUser.getUID());
+        return ResponseEntity.ok(session);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUsr(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok("Logged out");
     }
 
 }
