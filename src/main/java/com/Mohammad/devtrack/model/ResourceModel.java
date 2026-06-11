@@ -2,6 +2,8 @@ package com.Mohammad.devtrack.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -29,7 +31,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResourceModel {
-    
+    public enum JobStatus {
+        APPLIED,
+        PHONE_SCREEN,
+        INTERVIEW,
+        OFFER,
+        REJECTED,
+        GHOSTED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long RID;
@@ -51,6 +61,10 @@ public class ResourceModel {
 
     @Column(name = "Notes", nullable = true) //
     private String Notes;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Status", nullable = false)
+    private JobStatus status = JobStatus.APPLIED;
 
     @Column(name = "DateCreated", nullable = true)
     private LocalDateTime DateCreated;

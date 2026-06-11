@@ -46,6 +46,7 @@ public class UserModel {
     private String email;
 
     @Column(name = "UHashedPassword", nullable = false)
+    // Won't allow for it to be returned in json format during the request
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String UHashedPassword;
 

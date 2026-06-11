@@ -22,8 +22,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public Optional<UserModel> findUsr(long UsrID) {
-        return userRepository.findById(UsrID);
+    public UserModel findUsr(long UsrID) {
+        UserModel readUser = userRepository.findById(UsrID)
+        .orElseThrow(() -> new UserExceptions.UserNotFoundException("User Not found"));
+
+        UserModel outputUser = new UserModel();
+        outputUser.setUID(readUser.getUID());
+        outputUser.setName(readUser.getName());
+        outputUser.setEmail(readUser.getEmail());
+        outputUser.setUHashedPassword(null);
+        return outputUser;
     }
 
     @Transactional
@@ -60,9 +68,9 @@ public class UserService {
     }
 
     @Transactional
-    public UserModel update(Long id, UserModel um) {
-        UserModel user = userRepository.findById(id)
-                .orElseThrow(() -> new UserExceptions.UserNotFoundException("User With ID: " + id + " Not Found"));
+    public UserModel update(UserModel um) {
+        UserModel user = userRepository.findById(um.getUID())
+                .orElseThrow(() -> new UserExceptions.UserNotFoundException("User With ID: " + um.getUID() + " Not Found"));
 
         if (um.getName() != null && !um.getName().isBlank()) {
             user.setName(um.getName());

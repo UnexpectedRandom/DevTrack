@@ -17,17 +17,18 @@ public class UserController {
 
     private final UserService userService;
 
-    @DeleteMapping("/delete-profile")
+    @DeleteMapping
     public ResponseEntity<?> deleteUser(HttpSession session) {
         Long currentUsrId = (Long) session.getAttribute("cookie-id");
         if (currentUsrId == null) {
-            return ResponseEntity.status(403).body("Forbidden: You can only delete your own account");
+            return ResponseEntity.status(401).body("Authentication Error: who are you?");
         }
         userService.delete(currentUsrId);
+        session.invalidate();
         return ResponseEntity.ok("Deleted Account Successfuly");
     }
 
-    @GetMapping("/view-profile")
+    @GetMapping
     public ResponseEntity<?> readUser(HttpSession session) {
         Long currentUsrId = (Long) session.getAttribute("cookie-id");
         if (currentUsrId == null) {
@@ -37,21 +38,27 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findUsr(currentUsrId));
     }
 
-    @PutMapping("/update-profile")
-    public ResponseEntity<?> updateUser(@RequestBody customDto customDTO, HttpSession session) {
+    @PutMapping
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserModel um, HttpSession session) {
 
         Long currentUsrId = (Long) session.getAttribute("cookie-id");
 
         if (currentUsrId == null) {
-            return ResponseEntity.status(401).body("Can't update this user's profile");
+            return ResponseEntity.status(401).body("Authentication Error: Who are you?");
         }
 
-        userService.update(customDTO.id(), customDTO.user());
+        if (!currentUsrId.equals(um.getUID())){
+            return ResponseEntity.status(401).body("");
+        }
+        userService.update(um);
 
-        return ResponseEntity.status(301).body("Changed profile");
+        return ResponseEntity.ok("Changed profile");
     }
 
-    public record customDto(Long id, UserModel user) {
-    };
+    
+    @PostMapping
+    public ResponseEntity<?> registerUsr(@Valid @RequestBody UserModel param) {
+        return ResponseEntity.ok(userService.create(param));
+    }
 
 }

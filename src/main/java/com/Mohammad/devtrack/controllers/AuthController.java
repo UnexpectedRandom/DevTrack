@@ -2,6 +2,9 @@ package com.Mohammad.devtrack.controllers;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import org.springframework.web.bind.annotation.*;
 
 import com.Mohammad.devtrack.service.UserService;
@@ -10,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -20,22 +20,26 @@ public class AuthController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
-    public UserModel registerUsr(@Valid @RequestBody UserModel param) {
-        return userService.create(param);
-    }
+    @PostMapping
+    public ResponseEntity<?> loginUsr(@Valid @RequestBody LoginRequest param, HttpSession session) {
+        UserModel userModel = new UserModel();
+        userModel.setEmail(param.email());
+        userModel.setUHashedPassword(param.UHashedPassword());
 
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUsr(@Valid @RequestBody UserModel param, HttpSession session) {
-        UserModel loggedInUser = userService.login(param);
+        UserModel loggedInUser = userService.login(userModel);
         session.setAttribute("cookie-id", loggedInUser.getUID());
-        return ResponseEntity.ok(session);
+        return ResponseEntity.ok(loggedInUser);
     }
 
-    @PostMapping("/logout")
+    @DeleteMapping
     public ResponseEntity<?> logoutUsr(HttpSession session) {
         session.invalidate();
         return ResponseEntity.ok("Logged out");
     }
 
+    public record LoginRequest(
+            @NotBlank(message = "Email is required") @Email(message = "Email is not valid") String email,
+
+            @NotBlank(message = "Password is required") String UHashedPassword) {
+    }
 }

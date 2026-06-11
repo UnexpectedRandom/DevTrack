@@ -1,6 +1,7 @@
 package com.Mohammad.devtrack.service;
 
 import com.Mohammad.devtrack.model.ResourceModel;
+import com.Mohammad.devtrack.model.UserModel;
 import com.Mohammad.devtrack.repository.ResourceRepository;
 import com.Mohammad.devtrack.exceptions.ResourceExceptions;
 import com.Mohammad.devtrack.exceptions.ValidationExceptions;
@@ -28,29 +29,47 @@ public class ResourceService {
     }
 
     @Transactional
-    public void delete(Long RID) {
-
-        if (!resourceRepository.existsById(RID)) {
-            throw new ResourceExceptions.ResourceNotFoundException("Resource not found with id: "+ RID);
+    public void delete(Long RID, Long currentUsrId) {
+        ResourceModel findResource = resourceRepository.findById(RID)
+        .orElseThrow(() -> new ResourceExceptions.ResourceNotFoundException("Resource not found with id: " + RID)); 
+        
+        if (findResource.getUID() == null) {
+            throw new SecurityException("This resource doesn't exist");
         }
+        
+        if (!currentUsrId.equals(findResource.getUID().getUID())) {
+            throw new SecurityException("You do not own this resource.");
+        }
+
         resourceRepository.deleteById(RID);
     }
 
     @Transactional
-    public ResourceModel create(ResourceModel rm) {
-
+    public ResourceModel create(ResourceModel rm, Long currentUserId) {
+        
         if (rm.getSalary() < 0) {
             throw new ValidationExceptions.ValidationException("Cannot Have Negative Salary");
         }
+
+        UserModel userCreate = new UserModel();
+        userCreate.setUID(currentUserId);
+
+        rm.setUID(userCreate);
+        rm.setDateCreated(LocalDateTime.now());
+        rm.setDateAppliedTo(LocalDateTime.now());
 
         return resourceRepository.save(rm);
     }
 
     @Transactional
-    public ResourceModel update(ResourceModel rm) {
+    public ResourceModel update(ResourceModel rm, Long currentUserId) {
+        
         ResourceModel resource = resourceRepository.findById(rm.getRID())
             .orElseThrow(() -> new ResourceExceptions.ResourceNotFoundException("Resource not found with id: " + rm.getRID()));
         
+        if (!resource.getUID().getUID().equals(currentUserId)) {
+            throw new SecurityException("You do not own this resource.");
+        }
         if (rm.getSalary() < 0) {
             throw new ValidationExceptions.ValidationException("Cannot Have Negative Salary");
 
